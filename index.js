@@ -1,14 +1,16 @@
+// ------------------ Keep-alive ------------------
 const express = require("express");
 const app = express();
+
+const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   res.send("Bot is alive");
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Keep alive actif");
-});
+app.listen(PORT, () => console.log(`Keep alive actif sur port ${PORT}`));
 
+// ------------------ Discord Bot ------------------
 const { 
   Client, 
   GatewayIntentBits, 
@@ -23,14 +25,14 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-// commandes
+// Commandes
 const commands = [
   new SlashCommandBuilder()
     .setName("startserver")
     .setDescription("Demande de démarrage serveur")
 ].map(cmd => cmd.toJSON());
 
-// ready
+// Ready
 client.once("ready", async () => {
   console.log("Bot connecté !");
 
@@ -41,20 +43,21 @@ client.once("ready", async () => {
     { body: commands }
   );
 
-  console.log("Commande enregistrée !");
+  console.log("Commande /startserver enregistrée !");
 });
 
-// interaction
+// Interaction
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "startserver") {
     await interaction.reply("📨 Demande envoyée au staff.");
 
-    const user = await client.users.fetch("1148281238935834645");
+    // Remplace TON_ID ici par ton ID Discord pour recevoir les notifications
+    const user = await client.users.fetch("TON_ID");
     user.send(`⚠️ ${interaction.user.tag} veut démarrer le serveur`);
   }
 });
 
-// login
+// Login
 client.login(process.env.DISCORD_TOKEN);
