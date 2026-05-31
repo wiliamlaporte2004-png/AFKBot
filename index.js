@@ -1,3 +1,14 @@
+const express = require("express");
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Bot is alive");
+});
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Keep alive actif");
+});
+
 const { 
   Client, 
   GatewayIntentBits, 
@@ -38,7 +49,6 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "startserver") {
-
     await interaction.reply("📨 Demande envoyée au staff.");
 
     const user = await client.users.fetch("1148281238935834645");
