@@ -1,4 +1,3 @@
-// ------------------ Keep-alive ------------------
 const express = require("express");
 const app = express();
 
@@ -8,9 +7,10 @@ app.get("/", (req, res) => {
   res.send("Bot is alive");
 });
 
-app.listen(PORT, () => console.log(`Keep alive actif sur port ${PORT}`));
+app.listen(PORT, () => {
+  console.log("Keep alive actif sur port", PORT);
+});
 
-// ------------------ Discord Bot ------------------
 const { 
   Client, 
   GatewayIntentBits, 
@@ -25,7 +25,7 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-// Commandes
+// Slash command
 const commands = [
   new SlashCommandBuilder()
     .setName("startserver")
@@ -53,9 +53,12 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "startserver") {
     await interaction.reply("📨 Demande envoyée au staff.");
 
-    // Remplace TON_ID ici par ton ID Discord pour recevoir les notifications
-    const user = await client.users.fetch("TON_ID");
-    user.send(`⚠️ ${interaction.user.tag} veut démarrer le serveur`);
+    try {
+      const user = await client.users.fetch("1148281238935834645"); // ID staff
+      await user.send(`⚠️ ${interaction.user.tag} veut démarrer le serveur`);
+    } catch (error) {
+      console.error("❌ Impossible d'envoyer le DM :", error);
+    }
   }
 });
 
